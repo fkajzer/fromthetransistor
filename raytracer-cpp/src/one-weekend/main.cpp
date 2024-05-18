@@ -12,28 +12,36 @@
 //
 //(C - (Q + td))^2 = r^2
 //(-td + (C - Q))^2 = r^2
-//binomial formula: t^2d^2 - 2td * (C-Q) + (C-Q) * (C-Q) = r^2
-//refer to a, b,c
-//quadratic formula: (-b +- sqrt(b^2 - 4ac)) / 2a
-//to check if we have solutions, only sqrt is interesting, we do not want the values!
-//just check if there are solutions!
-bool hit_sphere(const point3 &center, float radius, const ray &r) {
+// binomial formula: t^2d^2 - 2td * (C-Q) + (C-Q) * (C-Q) = r^2
+// refer to a, b,c
+// quadratic formula: (-b +- sqrt(b^2 - 4ac)) / 2a
+// to check if we have solutions, only sqrt is interesting, we do not want the
+// values! just check if there are solutions!
+float hit_sphere(const point3 &center, float radius, const ray &r) {
   vec3 oc = center - r.origin();              // (C - Q)
   auto a = dot(r.direction(), r.direction()); // d * d
   auto b = -2.0 * dot(r.direction(), oc);     // -2d * (C - Q)
   auto c = dot(oc, oc) - radius * radius;     // (C - Q) * (C - Q) * r^2
 
-  // if square root is positive, we have 2 solutions (ray penetrates and exits sphere)
-  // if square root is 0 we have 1 solution (ray hits sphere once at the edge)
-  // if square root is negative, we have no solution!
-  // only check for discriminant:
+  // if square root is positive, we have 2 solutions (ray penetrates and exits
+  // sphere) if square root is 0 we have 1 solution (ray hits sphere once at the
+  // edge) if square root is negative, we have no solution! only check for
+  // discriminant:
   auto discriminant = b * b - 4 * a * c;
-  return (discriminant >= 0);
+
+  if (discriminant < 0) {
+    return -1.0;
+  } else {
+    return (-b - sqrt(discriminant)) / (2.0 * a);
+  }
 }
 
 color ray_color(const ray &r) {
-  if (hit_sphere(point3(0, 0, -1), 0.5, r))
-    return color(1, 0, 0);
+  auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
+  if (t > 0.0) {
+    vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
+    return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+  }
 
   vec3 unit_direction = unit_vector(r.direction());
   auto a = 0.5 * (unit_direction.y() + 1.0);

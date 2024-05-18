@@ -12,6 +12,8 @@ public:
   const point3 &origin() const { return _origin; }
   const point3 &direction() const { return _direction; }
 
+  point3 at(float t) const { return _origin + t * _direction; }
+
 private:
   point3 _origin;
   vec3 _direction;
