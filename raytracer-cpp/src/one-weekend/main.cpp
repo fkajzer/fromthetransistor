@@ -4,35 +4,19 @@
 
 #include <iostream>
 
-// C = center of sphere
-// P = point along the ray, solving P(t) means potential point along the ray
-// Q = ray origin
-// (C - P(t)) * (C-P(t)) = rˆ2
-// P(t) = Q + d*t => shooting ray along its direction, solving for t
-//
-//(C - (Q + td))^2 = r^2
-//(-td + (C - Q))^2 = r^2
-// binomial formula: t^2d^2 - 2td * (C-Q) + (C-Q) * (C-Q) = r^2
-// refer to a, b,c
-// quadratic formula: (-b +- sqrt(b^2 - 4ac)) / 2a
-// to check if we have solutions, only sqrt is interesting, we do not want the
-// values! just check if there are solutions!
+// look at git history for math
 float hit_sphere(const point3 &center, float radius, const ray &r) {
-  vec3 oc = center - r.origin();              // (C - Q)
-  auto a = dot(r.direction(), r.direction()); // d * d
-  auto b = -2.0 * dot(r.direction(), oc);     // -2d * (C - Q)
-  auto c = dot(oc, oc) - radius * radius;     // (C - Q) * (C - Q) * r^2
+  vec3 oc = center - r.origin();
+  auto a = r.direction().length_squared();
+  auto h = dot(r.direction(), oc);
+  auto c = oc.length_squared() - radius * radius;
 
-  // if square root is positive, we have 2 solutions (ray penetrates and exits
-  // sphere) if square root is 0 we have 1 solution (ray hits sphere once at the
-  // edge) if square root is negative, we have no solution! only check for
-  // discriminant:
-  auto discriminant = b * b - 4 * a * c;
+  auto discriminant = h * h - a * c;
 
   if (discriminant < 0) {
     return -1.0;
   } else {
-    return (-b - sqrt(discriminant)) / (2.0 * a);
+    return (h - sqrt(discriminant)) / a;
   }
 }
 
