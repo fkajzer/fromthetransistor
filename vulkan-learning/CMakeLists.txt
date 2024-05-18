@@ -5,9 +5,12 @@ project(VulkanLearning)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
  
+# Set precompiler flag so that debugging stuff is running
+add_definitions(-DNDEBUG)
+
 # packages
-find_package(GLFW3 REQUIRED)
 find_package(Vulkan REQUIRED)
+find_package(GLFW3 REQUIRED)
 
 # Include directories
 include_directories(${GLFW_INCLUDE_DIR} ${Vulkan_INCLUDE_DIR})
