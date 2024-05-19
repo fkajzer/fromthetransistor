@@ -106,6 +106,7 @@ private:
     createLogicalDevice();
     createSwapChain();
     createImageViews();
+    createGraphicsPipeline();
   }
 
   void mainLoop() {
@@ -495,6 +496,8 @@ private:
       throw std::runtime_error("failed to create window surface");
     }
   }
+
+  void createGraphicsPipeline() {}
 
   void setupDebugMessenger() {
     if (!enableValidationLayers)
